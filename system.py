@@ -8,7 +8,7 @@ ps = PorterStemmer()
 # things to avoid
 punctuation_and_numbers = ["!", "@", "#", "$", "%", "'", "^", "&", "*", "(", ")", "{", "}", "[", "]", "\\", "|", "=",
                            "+", "/", "?", "-", "_", ".", "<", ">", "`", "~", ";", ":", ",",
-               '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+                           '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
 # many more things to avoid
 stop_words = ['a', 'the', 'an', 'and', 'or', 'but', 'about', 'above', 'after', 'along', 'amid', 'among',
@@ -52,7 +52,7 @@ data = pd.read_csv("all-data.csv", delimiter=',', encoding="ISO-8859-1", header=
 system_avg = 0
 stemmer_avg = 0
 baseline_avg = 0
-for iteration in range(1,1001):
+for iteration in range(1, 11):
     # create train and test data splits
     train, test = train_test_split(data, test_size=0.20)
 
@@ -140,8 +140,6 @@ for iteration in range(1,1001):
         if stemmer_abs != 0:
             stemmer_score /= stemmer_abs
 
-        # print(abs(true_sentiment - sentiment_score))
-
         system_rmse += abs(true_sentiment - sentiment_score) ** 2
 
         stemmer_rmse += abs(true_sentiment - stemmer_score) ** 2
@@ -166,3 +164,25 @@ for iteration in range(1,1001):
 print("System Average: " + str(system_avg / iteration))
 print("Stem Average: " + str(stemmer_avg / iteration))
 print("Baseline Average: " + str(baseline_avg / iteration))
+
+#%%
+
+sentence = ""
+
+while sentence != "quit":
+    sentence = input("Enter sentence: ")
+    words = sentence.split(' ')
+
+    new_score = 0
+    new_score_abs = 0
+
+    for word in words:
+        if checkWord(word):
+            if word in word_sentiments:
+                new_score += word_sentiments[word]
+                new_score_abs += abs(word_sentiments[word])
+
+    if new_score_abs != 0:
+        new_score /= new_score_abs
+
+    print("Sentiment score: " + str(new_score))
