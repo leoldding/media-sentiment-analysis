@@ -52,13 +52,15 @@ data = pd.read_csv("all-data.csv", delimiter=',', encoding="ISO-8859-1", header=
 system_avg = 0
 stemmer_avg = 0
 baseline_avg = 0
-for iteration in range(1, 11):
+for iteration in range(1, 101):
     # create train and test data splits
     train, test = train_test_split(data, test_size=0.20)
 
     # dictionary to hold words and their sentiment values
     word_sentiments = {}
+    word_counts = {}
     stemmer_sentiments = {}
+    stemmer_counts = {}
 
     # iterate through each headline and increment valid words based on attached sentiment
     for i in range(len(train)):
@@ -70,44 +72,28 @@ for iteration in range(1, 11):
                     word_sentiments[word] = 1 if sentiment == 'positive' else -1 if sentiment == 'negative' else 0
                 else:
                     word_sentiments[word] += 1 if sentiment == 'positive' else -1 if sentiment == 'negative' else 0
+                if word not in word_counts:
+                    word_counts[word] = 1
+                else:
+                    word_counts[word] += 1
+
                 stem = ps.stem(word)
                 if stem not in stemmer_sentiments:
                     stemmer_sentiments[stem] = 1 if sentiment == 'positive' else -1 if sentiment == 'negative' else 0
                 else:
                     stemmer_sentiments[stem] += 1 if sentiment == 'positive' else -1 if sentiment == 'negative' else 0
+                if stem not in stemmer_counts:
+                    stemmer_counts[stem] = 1
+                else:
+                    stemmer_counts[stem] += 1
 
-    #%%
-    '''
-    # print out each word and its sentiment
+    # normalize word sentiment values
     for word in word_sentiments.keys():
-        print(word + ": " + str(word_sentiments[word]))
-    '''
+        word_sentiments[word] /= word_counts[word]
+    for stem in stemmer_sentiments.keys():
+        stemmer_sentiments[stem] /= stemmer_counts[stem]
 
-    '''
-    # count the number of times a certain sentiment number appears
-    temp = {}
-    for value in word_sentiments.values():
-        if value not in temp:
-            temp[value] = 1
-        else:
-            temp[value] += 1
-
-    # print sentiment values in sorted order
-    keys = list(temp.keys())
-    keys.sort()
-    for key in keys:
-        print(str(key) + ": " + str(temp[key]))
-    '''
-
-    '''
-    # print big valued words
-    for key in word_sentiments.keys():
-        if abs(word_sentiments[key]) > 49:
-            print(key)
-    '''
-
-
-    #%%
+    # initialize rmse variables
     system_rmse = 0
     stemmer_rmse = 0
     baseline_rmse = 0
@@ -149,16 +135,16 @@ for iteration in range(1, 11):
 
     # calculate rmse
     normalized_system_rmse = math.sqrt(system_rmse / len(test)) / 2
-    normalized_stem_rmse = math.sqrt(stemmer_rmse / len(test)) / 2
+    normalized_stemmer_rmse = math.sqrt(stemmer_rmse / len(test)) / 2
     normalized_baseline_rmse = math.sqrt(baseline_rmse / len(test)) / 2
 
     system_avg += normalized_system_rmse
-    stemmer_avg += normalized_stem_rmse
+    stemmer_avg += normalized_stemmer_rmse
     baseline_avg += normalized_baseline_rmse
 
     print("Iteration " + str(iteration))
     print("Normalized System RMSE: " + str(normalized_system_rmse))
-    print("Normalized Stem RMSE: " + str(normalized_stem_rmse))
+    print("Normalized Stem RMSE: " + str(normalized_stemmer_rmse))
     print("Normalized Baseline RMSE: " + str(normalized_baseline_rmse))
 
 print("System Average: " + str(system_avg / iteration))
@@ -167,10 +153,9 @@ print("Baseline Average: " + str(baseline_avg / iteration))
 
 #%%
 
-sentence = ""
+sentence = input("Enter sentence: ")
 
 while sentence != "quit":
-    sentence = input("Enter sentence: ")
     words = sentence.split(' ')
 
     new_score = 0
@@ -186,3 +171,28 @@ while sentence != "quit":
         new_score /= new_score_abs
 
     print("Sentiment score: " + str(new_score))
+
+    sentence = input("Enter sentence: ")
+
+
+#%%
+
+'''
+# print out each word and its sentiment
+for word in word_sentiments.keys():
+    print(word + ": " + str(word_sentiments[word]))
+
+# count the number of times a certain sentiment number appears
+temp = {}
+for value in word_sentiments.values():
+    if value not in temp:
+        temp[value] = 1
+    else:
+        temp[value] += 1
+
+# print sentiment values in sorted order
+keys = list(temp.keys())
+keys.sort()
+for key in keys:
+    print(str(key) + ": " + str(temp[key]))
+'''

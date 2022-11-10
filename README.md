@@ -13,8 +13,8 @@ The last system chooses a headline's sentiment at random.
 The differences in the predicted and the actual sentiment is calculated using RMSE. 
 This is the baseline system.
 
-The first system scores around a 0.471.
+The first system scores around a 0.409.
 
-The second system scores around a 0.476.
+The second system scores around a 0.414.
 
 The baseline system scores around a 0.518.
