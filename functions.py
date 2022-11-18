@@ -1,12 +1,12 @@
 import pandas as pd
 import math
 
-# things to avoid
+# avoid punctuation and numbers
 punctuation_and_numbers = ["!", "@", "#", "$", "%", "'", "^", "&", "*", "(", ")", "{", "}", "[", "]", "\\", "|", "=",
                            "+", "/", "?", "-", "_", ".", "<", ">", "`", "~", ";", ":", ",",
                            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
-# many more things to avoid
+# words to skip over
 stop_words = ['a', 'the', 'an', 'and', 'or', 'but', 'about', 'above', 'after', 'along', 'amid', 'among',
               'as', 'at', 'by', 'for', 'from', 'in', 'into', 'like', 'near', 'of', 'off', 'on',
               'onto', 'out', 'over', 'past', 'per', 'plus', 'since', 'till', 'to', 'under', 'until', 'up',
@@ -30,15 +30,16 @@ stop_words = ['a', 'the', 'an', 'and', 'or', 'but', 'about', 'above', 'after', '
               'you', 'your', 'yours', 'me', 'my', 'mine', 'i', 'we', 'us', 'much', 'and/or', 'wo', 'ca', 'mus', 'sha'
               ]
 
-flip_words = ['no', 'not', 'rather', 'never', 'none', 'nobody',
-              'nothing', 'neither', 'nor', 'nowhere', 'cannot',
-              'without', 'n\'t']
+# words that reverse the sentiment of subsequent words
+flip_words = ['no', 'not', 'rather', 'never', 'none', 'nobody', 'nothing',
+              'neither', 'nor', 'nowhere', 'cannot', 'without', 'n\'t']
 
+# words tham reduce the sentiment of subsequent words
 diminish_words = ['hardly', 'less', 'little', 'rarely', 'scarcely', 'seldom']
 dimVal = 0.5
 
 
-# check if a word is something we need to avoid
+# check if a word should be skipped
 def checkWord(check):
     for word in stop_words:
         if word == check:
@@ -65,8 +66,9 @@ def checkDiminish(check):
     return False
 
 
-# dictionary to hold words and their sentiment values
+# assigns sentiment values to words
 def assignSentiment(flipNum=0, diminish=0.5, train=pd.DataFrame):
+    # initialize variables
     word_sentiments = {}
     word_counts = {}
     flip = 0
@@ -77,14 +79,14 @@ def assignSentiment(flipNum=0, diminish=0.5, train=pd.DataFrame):
         sentiment = train.sentiment.iloc[i]
         headline = train.headlines.iloc[i].lower().split(' ')
         for word in headline:
-            if checkWord(word):
-                if checkFlip(word):
-                    flip = flipNum
+            if checkWord(word):  # check to skip word or not
+                if checkFlip(word):  # check if increment should be flipped for following words
+                    flip = flipNum  # the next flipNum words will have reversed increments
                     continue
-                if checkDiminish(word):
-                    increment = diminish
+                if checkDiminish(word):  # check if increment should be reduced for the following word
+                    increment = diminish  # the next increment will be diminished
                     continue
-                if flip == 0:
+                if flip == 0:  # normal sentiment increment
                     if word not in word_sentiments:
                         word_sentiments[word] = increment if sentiment == 'positive' else increment * -1 if sentiment == 'negative' else 0
                     else:
@@ -93,7 +95,7 @@ def assignSentiment(flipNum=0, diminish=0.5, train=pd.DataFrame):
                         word_counts[word] = 1
                     else:
                         word_counts[word] += 1
-                else:
+                else:  # flipped sentiment increment
                     if word not in word_sentiments:
                         word_sentiments[word] = increment if sentiment == 'negative' else increment * -1 if sentiment == 'positive' else 0
                     else:
@@ -103,8 +105,9 @@ def assignSentiment(flipNum=0, diminish=0.5, train=pd.DataFrame):
                     else:
                         word_counts[word] += 1
                     flip -= 1
-                if increment != 1:
+                if increment != 1:  # return increment to normal
                     increment = 1
+    # normalize values
     for word in word_sentiments.keys():
         word_sentiments[word] /= word_counts[word]
     return word_sentiments
@@ -113,23 +116,28 @@ def assignSentiment(flipNum=0, diminish=0.5, train=pd.DataFrame):
 def calculateRMSE(word_sentiments, validation=pd.DataFrame):
     rmse = 0
 
+    # iterate through validation set
     for i in range(len(validation)):
         true_sentiment = 1 if validation.sentiment.iloc[i] == 'positive' else -1 if validation.sentiment.iloc[i] == 'negative' else 0
         headline = validation.headlines.iloc[i].lower().split(' ')
 
         sentiment_score = 0
-        sentiment_abs = 0
+        sentiment_abs = 0  # used to standardize score between -1 and 1
 
+        # iterate through words in headline incrementing score based on training dictionary
         for word in headline:
             if word in word_sentiments:
                 sentiment_score += word_sentiments[word]
                 sentiment_abs += abs(word_sentiments[word])
 
+        # standardize score
         if sentiment_abs != 0:
             sentiment_score /= sentiment_abs
 
+        # increment rmse
         rmse += abs(true_sentiment - sentiment_score) ** 2
 
+    # calculate and return rmse score
     return math.sqrt(rmse / len(validation)) / 2
 
 
