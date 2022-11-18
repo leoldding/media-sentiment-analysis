@@ -2,13 +2,6 @@ import pandas as pd
 import math
 import random
 
-flip_words = ['no', 'not', 'rather', 'couldn\'t', 'wasn\'t', 'didn\'t', 'wouldn\'t', 'shouldn\'t', 'weren\'t',
-              'don\'t', 'doesn\'t', 'haven\'t', 'hasn\'t', 'won\'t', 'hadn\'t', 'never', 'none', 'nobody',
-              'nothing', 'neither', 'nor', 'nowhere', 'isn\'t', 'can\'t', 'cannot', 'musn\'t', 'mightn\'t', 'shan\'t',
-              'without', 'needn\'t']
-
-diminish_words = ['hardly', 'less', 'little', 'rarely', 'scarcely', 'seldom']
-
 test = pd.read_csv('test.csv')
 
 word_sentiments = {}
