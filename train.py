@@ -51,4 +51,5 @@ word_sentiments = functions.assignSentiment(bestFlip, bestDiminish, train)
 # output word sentiment values to text file
 with open('sentiments.txt', 'w') as f:
     for word in word_sentiments.keys():
-        f.write(word + ' ' + str(word_sentiments[word]) + '\n')
+        if word_sentiments[word] != 0:
+            f.write(word + ' ' + str(word_sentiments[word]) + '\n')
