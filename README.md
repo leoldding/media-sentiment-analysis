@@ -1,20 +1,13 @@
-The data is split into 80/20 train test splits.
+The data is split into two sets. The training/validation set consists of 90% of the data while the test set consists of the remaining 10%. 
 
-There are three systems that are running.
+The train.py file trains the system. 
+The system uses iterates over different combinations of parameters to find the optimal set of parameters (essential sklearn's GridSearchCV).
+Each parameter set then runs a 10-fold cross validation system on the training/validation data. 
+Each set of parameters will then receive an average RMSE score from the 10-fold cross validation scoring.
+The lowest average RMSE score and its respective parameters is then used to create the final word/sentiment pair text output.
 
-The first system reads in words from the train set and increases or decreases the words associated sentiment value based on the sentiment of the overall headline.
-Then it will read in headlines from the test set and manipulate a headline sentiment score using the values stored from the first step. 
-The final score per headline is just the aggregation of the word sentiment values. 
-
-The second system is pretty much the first system, except it looks at the stems of words instead.
-
-The last system chooses a headline's sentiment at random.
-
-The differences in the predicted and the actual sentiment is calculated using RMSE. 
-This is the baseline system.
-
-The first system scores around a 0.409.
-
-The second system scores around a 0.414.
-
-The baseline system scores around a 0.518.
+The test.py file tests the system and outputs the final RMSE score. 
+The test system reads in the text output from train.py and creates a dictionary. 
+It then runs through the test set of data and compares the true value to the calculated value using the dictionary.
+It also compares the true value to a randomly chosen sentiment value to be used as a baseline.
+At the end, both the system's normalized RMSE and the baseline's normalized RMSE are outputted.
