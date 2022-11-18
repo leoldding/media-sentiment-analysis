@@ -25,7 +25,7 @@ stop_words = ['a', 'the', 'an', 'and', 'or', 'but', 'about', 'above', 'after', '
               'whether',  'why',  'whose',  'if',  'anybody',  'anyone',  'anyplace',
               'anything',  'anytime' 'anywhere',  'everybody',  'everyday',
               'everyone',  'everyplace',  'everything' 'everywhere',  'whatever',
-              'whenever',  'whereever',  'whichever',  'whoever',  'whomever' 'he',
+              'whenever',  'wherever',  'whichever',  'whoever',  'whomever' 'he',
               'him',  'his',  'her',  'she',  'it',  'they',  'them',  'its',  'their', 'theirs',
               'you', 'your', 'yours', 'me', 'my', 'mine', 'i', 'we', 'us', 'much', 'and/or', 'wo', 'ca', 'mus', 'sha'
               ]
@@ -34,7 +34,7 @@ stop_words = ['a', 'the', 'an', 'and', 'or', 'but', 'about', 'above', 'after', '
 flip_words = ['no', 'not', 'rather', 'never', 'none', 'nobody', 'nothing',
               'neither', 'nor', 'nowhere', 'cannot', 'without', 'n\'t']
 
-# words tham reduce the sentiment of subsequent words
+# words that reduce the sentiment of subsequent words
 diminish_words = ['hardly', 'less', 'little', 'rarely', 'scarcely', 'seldom']
 dimVal = 0.5
 
@@ -139,5 +139,3 @@ def calculateRMSE(word_sentiments, validation=pd.DataFrame):
 
     # calculate and return rmse score
     return math.sqrt(rmse / len(validation)) / 2
-
-

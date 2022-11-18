@@ -43,7 +43,7 @@ for i in range(len(test)):
     # increment system rmse
     system_rmse += abs(true_sentiment - sentiment_score) ** 2
 
-    # choose random sentiment and incresase baseline rmse
+    # choose random sentiment and increase baseline rmse
     random_sentiment = random.randint(-1, 1)
     baseline_rmse += abs(true_sentiment - random_sentiment) ** 2
 
