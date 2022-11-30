@@ -1,15 +1,20 @@
 import pandas as pd
 import math
+import statistics
 import random
+import sys
 
 # read in test dataset
-test = pd.read_csv('test.csv')
+test = pd.read_csv(sys.argv[1] + 'test.csv')
 
 # create dictionary for word-sentiment pairs
 word_sentiments = {}
 
+# create storage for sentiment scores
+scores = []
+
 # read in word-sentiment pairs from train.py output
-with open('sentiments.txt', 'r') as f:
+with open(sys.argv[1] + 'sentiments.txt', 'r') as f:
     lines = f.readlines()
     for line in lines:
         split = line.split(' ')
@@ -43,6 +48,8 @@ for i in range(len(test)):
     # increment system rmse
     system_rmse += abs(true_sentiment - sentiment_score) ** 2
 
+    scores.append(sentiment_score)
+
     # choose random sentiment and increase baseline rmse
     random_sentiment = random.randint(-1, 1)
     baseline_rmse += abs(true_sentiment - random_sentiment) ** 2
@@ -50,6 +57,9 @@ for i in range(len(test)):
 # calculate normalized rmse
 normalized_system_rmse = math.sqrt(system_rmse / len(test)) / 2
 normalized_baseline_rmse = math.sqrt(baseline_rmse / len(test)) / 2
+
+print("Sentiment Score Mean: " + str(statistics.mean(scores)))
+print("Sentiment Score Standard Deviation: " + str(statistics.stdev(scores)))
 
 print("Normalized System RMSE: " + str(normalized_system_rmse))
 print("Normalized Baseline RMSE: " + str(normalized_baseline_rmse))

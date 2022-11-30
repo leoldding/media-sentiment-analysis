@@ -53,7 +53,9 @@ def checkWord(check):
 # check if a word flips sentiment for subsequent words
 def checkFlip(check):
     for word in flip_words:
-        if word == check:
+        if word == 'n\'t' and word in check:
+            return True
+        elif word == check:
             return True
     return False
 
