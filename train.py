@@ -23,7 +23,7 @@ bestFlip = 0
 bestDiminish = 0
 
 # parameters to test
-flipParams = [1, 2, 3]
+flipParams = [1, 2]
 diminishParams = [i for i in np.arange(0.05, 1, 0.05)]
 
 original_time = time.time()
