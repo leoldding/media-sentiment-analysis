@@ -1,17 +1,17 @@
-#Data
+# Data
 
 The financial data is already inside of the *data* directory. 
 Inside the same directory is the *tweetsPreprocessing.py* file. 
 The tweets data is too large to put onto GitHub, but the data can be found on https://www.kaggle.com/datasets/kazanova/sentiment140.
 After downloading the data, please rename the file to 'tweetsOriginal.csv', place it inside the *data* directory, and run *tweetsPreprocessing.py*.
 
-#Running the Programs
+# Running the Programs
 
 Use the command line to run the programs. 
 Each program has a required argument to denote which data is used.
 The argument is either *financial* or *tweets*. For example, *python train.py tweets* trains the tweets model.
 
-#Process
+# Process
 The data is split into two sets. The training/validation set consists of 90% of the data while the test set consists of the remaining 10%. 
 
 The train.py file trains the system through the use of grid search cross validation.
